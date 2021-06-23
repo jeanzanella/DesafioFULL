@@ -2,8 +2,8 @@ import React from 'react'
 
 const TitulosLista = props => {
     const renderRows = () => {
-        const list = props.list || []
-        return list.map(titulo => (
+        const lista = props.lista || []
+        return lista.map(titulo => (
             <tr key={titulo.numeroTitulo}>
                 <td>{titulo.numeroTitulo}</td>
                 <td>{titulo.nomeDevedor}</td>
