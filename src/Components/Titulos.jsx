@@ -54,6 +54,7 @@ export default class Titulos extends Component {
 
   handleAdd() {
       const titulo = this.state.titulo
+      titulo.Parcelas = this.state.parcelas
       axios.post(`${URL}/api/Titulos/AdicionarTitulo`, { titulo })
       .then(resp => {this.refresh(); this.handleClose();} )
   }
