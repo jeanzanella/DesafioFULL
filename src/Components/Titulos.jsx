@@ -5,13 +5,13 @@ import TitulosLista from './TitulosLista'
 import PageHeader from '../Templates/PageHeader';
 
 const URL = 'http://localhost:45118'
-const parcela = { NumeroParcela: '', DataVencimento: '', Valor: '' }
+const parcela = { numeroParcela: '', dataVencimento: '', valor: '' }
 const initialState = {
     lista: [],
     show: false,
-    titulo: { NumeroTitulo: '', NomeDevedor: '', CpfDevedor: '', PercentualJuros: '', PercentualMulta: '', Parcelas: []},
-    numeroParcelas: 1, 
-    valorTotal: '',
+    titulo: { numeroTitulo: '', nomeDevedor: '', cpfDevedor: '', percentualJuros: '', percentualMulta: '', parcelas: []},
+    // numeroparcelas: 1, 
+    // valorTotal: '',
     parcelas: [parcela],
 }
 
@@ -38,23 +38,27 @@ export default class Titulos extends Component {
       this.setState({ titulo })
   }
 
-//   handleChangeParcelas(e) {
+//   handleChangeparcelas(e) {
 
 //   }
 
   handleChangeParcela(e, index) {
-      const novoArrayParcelas = [...this.state.parcelas]
-      novoArrayParcelas[index][e.target.name] = e.target.value
-      this.setState({parcelas: novoArrayParcelas})
+      let parcela = {...this.state.parcelas[index]}
+      parcela[e.target.name] = e.target.value
+      let novoArrayparcelas = [...this.state.parcelas]
+      novoArrayparcelas[index] = parcela
+      this.setState({parcelas: novoArrayparcelas})
   }
 
   adicionarParcela = () => {
-      this.setState({parcelas: [...this.state.parcelas, {parcela}]})
+      const novoArray = this.state.parcelas.slice();
+      novoArray.push(parcela);
+      this.setState({ parcelas: novoArray });
   }
 
   handleAdd() {
       const titulo = this.state.titulo
-      titulo.Parcelas = this.state.parcelas
+      titulo.parcelas = this.state.parcelas
       axios.post(`${URL}/api/Titulos/AdicionarTitulo`, { titulo })
       .then(resp => {this.refresh(); this.handleClose();} )
   }
@@ -77,40 +81,40 @@ export default class Titulos extends Component {
                     </Modal.Header>
                     <Modal.Body>
                         <label>Número do titulo</label>
-                        <input id='NumeroTitulo' name='NumeroTitulo' className='form-control' placeholder='Número do titulo' 
-                        onChange={e => this.handleChange(e)} value={this.state.titulo.NumeroTitulo}/>
+                        <input id='numeroTitulo' name='numeroTitulo' className='form-control' placeholder='Número do titulo' 
+                        onChange={e => this.handleChange(e)} value={this.state.titulo.numeroTitulo}/>
                         <label>Nome do devedor</label>
-                        <input id='NomeDevedor' name='NomeDevedor' className='form-control' placeholder='Nome do devedor' 
-                        onChange={e => this.handleChange(e)} value={this.state.titulo.NomeDevedor}/>
+                        <input id='nomeDevedor' name='nomeDevedor' className='form-control' placeholder='Nome do devedor' 
+                        onChange={e => this.handleChange(e)} value={this.state.titulo.nomeDevedor}/>
                         <label>CPF do devedor(Somente Números)</label>
-                        <input id='CpfDevedor' name='CpfDevedor' className='form-control' placeholder='CPF do devedor(Somente Números)' 
-                        onChange={e => this.handleChange(e)} value={this.state.titulo.CpfDevedor} type='number' maxLength='11'/>
+                        <input id='cpfDevedor' name='cpfDevedor' className='form-control' placeholder='CPF do devedor(Somente Números)' 
+                        onChange={e => this.handleChange(e)} value={this.state.titulo.cpfDevedor} type='number' maxLength='11'/>
                         <label>Percentual de Juros</label>
-                        <input id='PercentualJuros' name='PercentualJuros' className='form-control' placeholder='% Juros' 
-                        onChange={e => this.handleChange(e)} value={this.state.titulo.PercentualJuros} type='number'/>
+                        <input id='percentualJuros' name='percentualJuros' className='form-control' placeholder='% Juros' 
+                        onChange={e => this.handleChange(e)} value={this.state.titulo.percentualJuros} type='number'/>
                         <label>Percentual Multa</label>
-                        <input id='PercentualMulta' name='PercentualMulta' className='form-control' placeholder='% Multa' 
-                        onChange={e => this.handleChange(e)} value={this.state.titulo.PercentualMulta} type='number'/>
-                        {/* <label>Número de Parcelas</label>
-                        <input id='numeroParcelas' name='numeroParcelas' className='form-control' placeholder='Número de Parcelas' 
-                        onChange={e => this.handleChangeParcelas(e)} value={this.state.numeroParcelas} type='number'/>
-                        <label>Valor Total</label>
-                        <input id='valorTotal' name='valorTotal' className='form-control' placeholder='Valor Total' 
-                        onChange={e => this.handleChangeParcelas(e)} value={this.state.valorTotal} type='number'/> */}
+                        <input id='percentualMulta' name='percentualMulta' className='form-control' placeholder='% Multa' 
+                        onChange={e => this.handleChange(e)} value={this.state.titulo.percentualMulta} type='number'/>
+                        {/* <label>Número de parcelas</label>
+                        <input id='numeroparcelas' name='numeroparcelas' className='form-control' placeholder='Número de parcelas' 
+                        onChange={e => this.handleChangeparcelas(e)} value={this.state.numeroparcelas} type='number'/>
+                        <label>valor Total</label>
+                        <input id='valorTotal' name='valorTotal' className='form-control' placeholder='valor Total' 
+                        onChange={e => this.handleChangeparcelas(e)} value={this.state.valorTotal} type='number'/> */}
                         <br/>
                         <Button onClick={this.adicionarParcela}>Adicionar Parcela</Button>
                         {this.state.parcelas.map((p, index) => {
                             return (
                                 <div>
                                     <label>Numero Parcela</label>
-                                    <input id='NumeroParcela' name='NumeroParcela' className='form-control' placeholder='Número Parcela' 
-                                    onChange={e => this.handleChangeParcela(e, index)} value={p.NumeroParcela} type='number'/>
+                                    <input id='numeroParcela' name='numeroParcela' className='form-control' placeholder='Número Parcela' 
+                                    onChange={e => this.handleChangeParcela(e, index)} value={p.numeroParcela} type='number'/>
                                     <label>Data Vencimento</label>
-                                    <input id='DataVencimento' name='DataVencimento' className='form-control' placeholder='Data Vencimento' 
-                                    onChange={e => this.handleChangeParcela(e, index)} value={p.DataVencimento} type='date'/>
-                                    <label>Valor Parcela</label>
-                                    <input id='Valor' name='Valor' className='form-control' placeholder='Valor Parcela' 
-                                    onChange={e => this.handleChangeParcela(e, index)} value={p.Valor} type='number'/>
+                                    <input id='dataVencimento' name='dataVencimento' className='form-control' placeholder='Data Vencimento' 
+                                    onChange={e => this.handleChangeParcela(e, index)} value={p.dataVencimento} type='date'/>
+                                    <label>valor Parcela</label>
+                                    <input id='valor' name='valor' className='form-control' placeholder='valor Parcela' 
+                                    onChange={e => this.handleChangeParcela(e, index)} value={p.valor} type='number'/>
                                     <br/>
                                 </div>
                             )
