@@ -61,6 +61,18 @@ export default class Titulos extends Component {
                         <label>Número do titulo</label>
                         <input id='NumeroTitulo' name='NumeroTitulo' className='form-control' placeholder='Número do titulo' 
                         onChange={e => this.handleChange(e)} value={this.state.titulo.NumeroTitulo}/>
+                        <label>Nome do devedor</label>
+                        <input id='NomeDevedor' name='NomeDevedor' className='form-control' placeholder='Nome do devedor' 
+                        onChange={e => this.handleChange(e)} value={this.state.titulo.NomeDevedor}/>
+                        <label>CPF do devedor(Somente Números)</label>
+                        <input id='CpfDevedor' name='CpfDevedor' className='form-control' placeholder='CPF do devedor(Somente Números)' 
+                        onChange={e => this.handleChange(e)} value={this.state.titulo.CpfDevedor} type='number' maxLength='11'/>
+                        <label>Percentual de Juros</label>
+                        <input id='PercentualJuros' name='PercentualJuros' className='form-control' placeholder='% Juros' 
+                        onChange={e => this.handleChange(e)} value={this.state.titulo.PercentualJuros} type='number'/>
+                        <label>Percentual Multa</label>
+                        <input id='PercentualMulta' name='PercentualMulta' className='form-control' placeholder='% Multa' 
+                        onChange={e => this.handleChange(e)} value={this.state.titulo.PercentualMulta} type='number'/>
                     </Modal.Body>
                     <Modal.Footer>
                     <Button variant="secondary" onClick={this.handleClose}>
