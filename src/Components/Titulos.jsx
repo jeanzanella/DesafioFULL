@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import {Button, Modal} from 'react-bootstrap'
+import Alert from 'react-bootstrap/Alert';
 import TitulosLista from './TitulosLista'
 import PageHeader from '../Templates/PageHeader';
 
@@ -10,9 +11,9 @@ const initialState = {
     lista: [],
     show: false,
     titulo: { numeroTitulo: '', nomeDevedor: '', cpfDevedor: '', percentualJuros: '', percentualMulta: '', parcelas: []},
-    // numeroparcelas: 1, 
-    // valorTotal: '',
     parcelas: [parcela],
+    showErrorAlert: false,
+    errorMsg: ''
 }
 
 export default class Titulos extends Component {
@@ -34,7 +35,7 @@ export default class Titulos extends Component {
 
   handleChange(e) {
       const titulo = {...this.state.titulo}
-      titulo[e.target.name] = e.target.value
+      titulo[e.target.name] = e.target.type === "number" ? parseFloat(e.target.value) : e.target.value
       this.setState({ titulo })
   }
 
@@ -44,7 +45,7 @@ export default class Titulos extends Component {
 
   handleChangeParcela(e, index) {
       let parcela = {...this.state.parcelas[index]}
-      parcela[e.target.name] = e.target.value
+      parcela[e.target.name] = e.target.type === "number" ? parseFloat(e.target.value) : e.target.value
       let novoArrayparcelas = [...this.state.parcelas]
       novoArrayparcelas[index] = parcela
       this.setState({parcelas: novoArrayparcelas})
@@ -58,13 +59,18 @@ export default class Titulos extends Component {
 
   handleAdd() {
       const titulo = this.state.titulo
+      titulo.numeroTitulo = parseInt(titulo.numeroTitulo)
+      titulo.percentualJuros = parseFloat(titulo.percentualJuros)
+      titulo.percentualMulta = parseFloat(titulo.percentualMulta)
       titulo.parcelas = this.state.parcelas
-      axios.post(`${URL}/api/Titulos/AdicionarTitulo`, { titulo })
+      axios.post(`${URL}/api/Titulos/AdicionarTitulo`, titulo )
       .then(resp => {this.refresh(); this.handleClose();} )
+      .catch(error => this.setState({showErrorAlert: true, errorMsg: error.message}))
   }
 
   handleClose = () => this.setState({ show: false })
   handleShow = () => this.setState({ show: true })
+  handleCloseErrorAlert = () => this.setState({ showErrorAlert: false})
   
   render(){
       return(
@@ -80,15 +86,26 @@ export default class Titulos extends Component {
                     <Modal.Title>Adicionar Titulo</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
+                        <Alert variant="danger" show={this.state.showErrorAlert}>
+                            {this.state.errorMsg}
+                            <br/>
+                            <div className="d-flex justify-content-end">
+                                <Button onClick={this.handleCloseErrorAlert}>
+                                    Fechar
+                                </Button>
+                            </div>
+                        </Alert>
+
+
                         <label>Número do titulo</label>
                         <input id='numeroTitulo' name='numeroTitulo' className='form-control' placeholder='Número do titulo' 
-                        onChange={e => this.handleChange(e)} value={this.state.titulo.numeroTitulo}/>
+                        onChange={e => this.handleChange(e)} value={this.state.titulo.numeroTitulo} type='number'/>
                         <label>Nome do devedor</label>
                         <input id='nomeDevedor' name='nomeDevedor' className='form-control' placeholder='Nome do devedor' 
                         onChange={e => this.handleChange(e)} value={this.state.titulo.nomeDevedor}/>
-                        <label>CPF do devedor(Somente Números)</label>
-                        <input id='cpfDevedor' name='cpfDevedor' className='form-control' placeholder='CPF do devedor(Somente Números)' 
-                        onChange={e => this.handleChange(e)} value={this.state.titulo.cpfDevedor} type='number' maxLength='11'/>
+                        <label>CPF do devedor</label>
+                        <input id='cpfDevedor' name='cpfDevedor' className='form-control' placeholder='CPF do devedor' 
+                        onChange={e => this.handleChange(e)} value={this.state.titulo.cpfDevedor} maxLength='11'/>
                         <label>Percentual de Juros</label>
                         <input id='percentualJuros' name='percentualJuros' className='form-control' placeholder='% Juros' 
                         onChange={e => this.handleChange(e)} value={this.state.titulo.percentualJuros} type='number'/>
